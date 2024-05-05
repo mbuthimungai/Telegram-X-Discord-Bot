@@ -1,0 +1,18 @@
+{
+	"telegram_keys":[
+
+		{
+			"key_number": "1",
+			"key_api_id": "23158067",
+			"key_api_hash": "93b93f72840f09a007258f6348f82036",
+			"key_api_title": "Test App",
+			"key_api_shortname": "Test App",
+			"key_session_name": "Test App",
+			"proxy_host": "172.120.40.15",
+    		"proxy_port": 64503,
+    		"proxy_username": "Ns634q1v",
+    		"proxy_password": "tJ79p4XS"
+		}
+
+	]
+}

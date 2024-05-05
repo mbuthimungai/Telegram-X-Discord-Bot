@@ -1,0 +1,184 @@
+{
+	"relay_packets":[
+		{
+			"name": "KICKASS DEALS",
+			"telegram_id": "1550773614",
+			"discord_id": "1094305070184669344",
+			"webhook": "https://discord.com/api/webhooks/1108121791089623090/scUm4gXHEeIACFWUb1H3INHSlKyZgA3cbqfCcTUy-UTLy5zxT18emfSmYbjjKUAcKm2z"
+		},
+		{
+			"name": "Sales-aholic",
+			"telegram_id": "1473315907",
+			"discord_id": "1108122555367301252",
+			"webhook": "https://discord.com/api/webhooks/1108122572035457206/dcfAJIe_QIzFO4IQrUPqX_hIBesv888TV9FCAOMZV6Qz0kweVRmQmIKVbUI7A19HcaV3"
+		},
+		{
+			"name": "Frugal Chick",
+			"telegram_id": "1270842544",
+			"discord_id": "1108122183387062272",
+			"webhook": "https://discord.com/api/webhooks/1108122210318696498/mmh7_bhRA7m4N-C91LvMoZrMJ3r-h8qjVgX8GPggh1HM6HFikleKmUuvF101XDnecGSt"
+		},
+		{
+			"name": "Heavenlysteals.com Deals Glitches",
+			"telegram_id": "1189259844",
+			"discord_id": "1094305224556040232",
+			"webhook": "https://discord.com/api/webhooks/1108121666879500348/VIhRfWKDowBN9fyY8jyTtMZpddMUk9vn_f-Zkd_HK83d5JIrEXgE5iSaoIomo50IiM48"
+		},
+		{
+			"name": "Amazon Pings",
+			"telegram_id": "1573411601",
+			"discord_id": "1108122357501022298",
+			"webhook": "https://discord.com/api/webhooks/1108122379424645140/yzqWIbMFUR3karV4suN6pdAEUkLAwxQrsnLxbqKgBVRnIKQ6skoJLJz2BThPmXJiKuWO"
+		},
+		{
+			"name": "Savingwithdan",
+			"telegram_id": "1473601999",
+			"discord_id": "1094305040442863626",
+			"webhook": "https://discord.com/api/webhooks/1108121469273264189/6ohTZSwnJhF9k-pUYwTe7U2VHO1iWzYf7dmAqI5h7w5OODMt_cJVZ6cwvm1Wx4OTEC2X"
+		},
+		{
+			"name": "Mamadeals",
+			"telegram_id": "1301659464",
+			"discord_id": "1094305090472526014",
+			"webhook": "https://discord.com/api/webhooks/1108199458765819984/_Q9G9vXpq5g3uyu_t4HEwS4SkowIXuR_M9OmI6_6bTG7yTXTvUKI3PxoK8-ZC-fXZY0F"
+		},
+		{
+			"name": "FreebieGuy",
+			"telegram_id": "1378237749",
+			"discord_id": "1108199693684592730",
+			"webhook": "https://discord.com/api/webhooks/1108199817097777253/PIiSb3qde7aAQf307Kax8aljaTlMSfPH9aW3wfQ5UrcjykzchVGOCUflBuVlD8HQ2Gbz"
+		},
+		{
+			"name": "DealHunters",
+			"telegram_id": "1473601999",
+			"discord_id": "1108200136724709446",
+			"webhook": "https://discord.com/api/webhooks/1108200203971997866/JrhWNC38XO7zYO1wAMpuHePCWVZhLPidGdarQQWn0mT13dxVQxzp9cekY3wqJNbeQHN3"
+		},
+		{
+			"name": "KyleDeals",
+			"telegram_id": "1225393889",
+			"discord_id": "1108200579697737808",
+			"webhook": "https://discord.com/api/webhooks/1108200595116019823/Ivkj4tKkzfqw0R26NoBIfWG67Bb8voytd0Ejq9pIyqu_cXfgXIu1lvREuhJEGbncsaFv"
+		},
+		{
+			"name": "Savings101",
+			"telegram_id": "1223716676",
+			"discord_id": "1108200915699253248",
+			"webhook": "https://discord.com/api/webhooks/1108200930622578749/la8zIJKskAmpNGCCiTutOnoQn8JBxXoL5n_-y28N11k5xfSS5DR50NBEVz9Qvy8Dkj3r"
+		},
+		{
+			"name": "LT Deals",
+			"telegram_id": "1168067716",
+			"discord_id": "1108201466256183307",
+			"webhook": "https://discord.com/api/webhooks/1108201480130920550/WvU39gt1Tgz3IjsGCK8WBQkcgUy4-ejFmrgpmwPYt1_fpVz1g4J4GdMs0DOgiQRXWy6q"
+		},
+		{
+			"name": "Hot Deals By Freebie Hunter",
+			"telegram_id": "1221861048",
+			"discord_id": "1135297326550888489",
+			"webhook": "https://discord.com/api/webhooks/1135297355525132509/OGIx9z8ffriEE6jTDdqm6IoZQAYi4sOpLwlm8PQkNF6aUw-zYBdyuK9g5NguYJJs1WAO"
+		},
+		{
+			"name": "addictive dealz",
+			"telegram_id": "1318758796",
+			"discord_id": "1135297667723968563",
+			"webhook": "https://discord.com/api/webhooks/1135297803548110868/oZY5pZb2GXszXJR4G9MHg9Yxq4fnbjsb1cGV8RPP5rRQ60H_MvSobHy1PQhDRNvV7eD8"
+		},
+		{
+			"name": "BlockBuster Deals",
+			"telegram_id": "1664336991",
+			"discord_id": "1135298770989502566",
+			"webhook": "https://discord.com/api/webhooks/1135298840564605018/Kt_pp7g4qbWC1UZaCHRegg_0uJ-W3Nd82Hl-_ABHjQDYcQL6MYwGYpX27FDceB67oerI"
+		},
+		{
+			"name": "Minion Deals Chat",
+			"telegram_id": "1582131036",
+			"discord_id": "1135300588536614912",
+			"webhook": "https://discord.com/api/webhooks/1135300607654236221/3SB8qEAtcymbXL-jiTmLSy_mNL7xSO3vGXPoJ_Y2fiMidwtWoFSvdBjk6IjfZ7bos4Ua"
+		},
+		{
+			"name": "Kickass Run Deals",
+			"telegram_id": "1954670157",
+			"discord_id": "1135301573283688458",
+			"webhook": "https://discord.com/api/webhooks/1135301590182547516/LvN9jmE3ETxyGab7r9snQBYbMIAsSuvWYesymLrraA-jX-AiXdJhP8F-aLHGAYpw5W53"
+		},
+		{
+			"name": "DEAL ADDICT",
+			"telegram_id": "1216818111",
+			"discord_id": "1135302004428783696",
+			"webhook": "https://discord.com/api/webhooks/1135302127179280384/6Qe7wS2o-pNnsnlmj2YcldUi3bkB329iZ8WMwpUed6QwwnwjhR7O_xOls6maLP5F-FOf"
+		},
+		{
+			"name": "Saving With Gaby",
+			"telegram_id": "1707512313",
+			"discord_id": "1135302434131026080",
+			"webhook": "https://discord.com/api/webhooks/1135302460748079155/aQBTkrLFeXapSrcRkpvX0nXD3CksNoY4h62B5pfE4QuTidrYS2IiD6SFM0uMSeWT7HJ_"
+		},
+		{
+			"name": "Deals with Kenzy",
+			"telegram_id": "1729411745",
+			"discord_id": "1135303623174271046",
+			"webhook": "https://discord.com/api/webhooks/1135303638538014751/Q1JrmY2WBjA8EDMrD3M60SLjPo8PNXYBuxyNDfW_uZzmRBg_PF65H3hZYEuGKS25_B5l"
+		},
+		{
+			"name": "Sweet Deals",
+			"telegram_id": "1320597173",
+			"discord_id": "1135833178490277930",
+			"webhook": "https://discord.com/api/webhooks/1135833204813725766/Tp9nydGQpuhFyxOQCA1ku2u4uYaw7cOzaczZVzcIZYhzGpzdHr6Q5F-mvnylde1poH2z"
+		},
+ 		{
+			"name": "V Deals",
+			"telegram_id": "1134453422",
+			"discord_id": "1135833178490277930",
+			"webhook": "https://discord.com/api/webhooks/1135834151153582111/8FTCULmfVVPlOpgixv1CVf9LC_4HXyPoEpFG-M4wrUhpHUxnyDW4IGGjPLOnyzhHVdpa"
+		},
+		{
+			"name": "aim2save",
+			"telegram_id": "1362905753",
+			"discord_id": "1136490283731783690",
+			"webhook": "https://discord.com/api/webhooks/1136492895763976252/jNOPK0t2Xok125hwubnd6qrVXFQWfC03IAiTO65zKJiXIhQAIwo9i1OCIafu40kcwKNH"
+		},
+		{
+			"name": "ID Glitches",
+			"telegram_id": "1422100801",
+			"discord_id": "1136490461142462505",
+			"webhook": "https://discord.com/api/webhooks/1136493047987843082/4UL-P260VEnIhlpQHWDHpHsWGvW-ITULHvcH_cqKMZEB8XTeZLCbikKxiSkH4vUesDpA"
+		},
+ 		{
+			"name": "NYM Coupons",
+			"telegram_id": "1359010981",
+			"discord_id": "1136490941205717082",
+			"webhook": "https://discord.com/api/webhooks/1136493176916561930/o7JHJrvKplCm95MsV7fW7GkkNoc8HQC-mgG1QNoRta3J6fYAl0RWxNAaJfCEGxPU_321"
+		},
+ 		{
+			"name": "Cosmic Deals",
+			"telegram_id": "1257643901",
+			"discord_id": "1136491120260546590",
+			"webhook": "https://discord.com/api/webhooks/1136493323427778602/K6R4pljqWrgEW2YuZiL5MlMFXfEqgolWa2u6OO1ednZ-GVaYOQJRP7oEpK3OAs2Th5Cu"
+		},
+ 		{
+			"name": "City Coupons",
+			"telegram_id": "1395943671",
+			"discord_id": "1136491259658244176",
+			"webhook": "https://discord.com/api/webhooks/1136493435742855179/7EvdULQZLM1LhWrUGGGuTReQnCS6TICg5bI0fsFUvxV6XG7LKrF3HUe7pfuLI0LLnBug"
+		},
+		{
+			"name": "Freebie Flow",
+			"telegram_id": "1972864327",
+			"discord_id": "1136686132315291698",
+			"webhook": "https://discord.com/api/webhooks/1136686355234160731/JdVibLUEwZZp2RlnePp9t1i5haQj2qq9WJwi2BePz5XqZfC4dceYXmKpzhUApz_wRPYY"
+		},
+		{
+			"name": "Amazon Codes",
+			"telegram_id": "1279737377",
+			"discord_id": "1136689266072748222",
+			"webhook": "https://discord.com/api/webhooks/1136689478199693332/6AMkKCuTr-h4uenvGHU8__MXkZvfr_R4fjkz-I6HbfdPh7qwW7WsHws8sXChvS6yIRbM"
+		},
+		{
+			"name": "REBELDEALZ Chat",
+			"telegram_id": "1162670760",
+			"discord_id": "1108123882361196666",
+			"webhook": "https://discord.com/api/webhooks/1108124782051983391/ZsI06lwgVliXMHy87nPebhe-0lj_kKGHN4nqyzCdq55UUl-b3mCLD1iZlomyAOk7_G1x"
+		}
+	]
+}

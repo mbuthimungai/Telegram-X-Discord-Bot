@@ -375,9 +375,10 @@ class LinkResolver:
 
 
     
-    async def scrape_facebook_post_content(facebook_url):
+    async def scrape_facebook_post_content(self, facebook_url):
         content = ""
         extracted_links = []
+        print("Performing under the hoods facebook")
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
@@ -391,7 +392,7 @@ class LinkResolver:
                     # Extract URLs from the content using regex
                     urls = re.findall(r'https?://[^\s]+', content)
                     extracted_links.extend(urls)
-                    
+                    print(f'Urls: {urls}')
                 except asyncio.TimeoutError:
                     print("Page load timed out. Attempting to extract available content...")
                 except Exception as e:
@@ -402,7 +403,7 @@ class LinkResolver:
 
         except Exception as e:
             print(f"Error scraping Facebook post content: {e}")
-
+        
         return content, extracted_links
 
 

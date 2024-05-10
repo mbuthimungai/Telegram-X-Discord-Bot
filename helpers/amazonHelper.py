@@ -4,6 +4,10 @@ from datetime import datetime
 import discord
 from utils.logger import configure_logger
 from utils.extract_number import extract_number
+from helpers.priceBreakdown import PriceBreakDown
+from helpers.text_analyzer import TextAnalysis
+
+
 
 logger = configure_logger(__name__)
 
@@ -30,6 +34,9 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
     Fetches data from Amazon using either an ASIN or a link, creates a Discord embed with product data.
     """
     print(f"User Input: {userInput}")
+    
+    price_breakdown = PriceBreakDown()
+    
     try:
                
         datas = await getattr(Amazon(userInput), method)()
@@ -49,59 +56,97 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         embed.set_footer(text='Powered by DiamondAIO', icon_url='https://static.timesofisrael.com/www/uploads/2017/12/iStock-639204700.jpg')
         embed.add_field(name="Content", value=f"```{text}```", inline=False)                
         
-        print('passed 1')
-        total_discount = 0
-        if discount_data:
-            if promo_codes:
-                promo_disc = 0
-                if promo_codes[0][:2]:  
-                    promo_disc = await extract_number(promo_codes[0][:2])
-                    if not promo_disc:
-                        promo_disc = 0
-                if discount_data[0]:  # Check if discount_data[0] exists and is not empty
-                    disc = await extract_number(discount_data[0][0])
-                    total_discount = promo_disc + disc
-            elif discount_data[0]:  # Check if discount_data[0] exists and is not empty
-                total_discount = await extract_number(discount_data[0][0])
-        elif promo_codes:  # Only promo_codes provided
-            promo_disc = 0
-            if promo_codes[0][:2]:  # Check if promo_codes[0][:2] exists and is not empty
-                promo_disc = float(promo_codes[0][:2])
-            total_discount = promo_disc
-        
-        print("Passed 1") 
-        
-        if deal_price:            
-            deal_price = deal_price.replace('xx', '99')  # Convert deal_price to float after cleaning
-            deal_price = await extract_number(deal_price)
-            deal_price = float(deal_price)
-                    
-        
-        print("passed 2")
-        if datas.get('Price'):
-            product_price = await extract_number(datas.get('Price', '0'))
-        else:
-            if total_discount and deal_price:
-                product_price = float((deal_price * 100)  / (100 - float(total_discount)))                                                    
-              
-        print("passed 3")
-        if product_price and not deal_price:
-            
-            if total_discount:
-                deal_price = product_price * (1 - total_discount / 100)                                
-            else:                
-                deal_price = float(product_price)
-                saving_percentage = await extract_number(datas.get('Savings percentage'))
-                if saving_percentage:
-                    product_price = float((deal_price * 100) / (100 - saving_percentage))
-                    total_discount = saving_percentage
-        if deal_price == product_price or product_price < deal_price:
-            total_discount = await extract_number(datas.get('Savings percentage'))
-            if total_discount:
-                deal_price = product_price
-                product_price = float((deal_price * 100) / (100 - saving_percentage))
-        print("passed 4")
+        saving_percentage = await extract_number(datas.get('Savings percentage'))
+        product_price = await extract_number(datas.get('Price', '0'))
+        block_message = datas.get('Promo block message')
+        deal_price = 0
         if deal_price:
+            deal_price = await extract_number(deal_price.replace('xx', '99'))
+        is_limited_deal = datas.get('Limited deal')
+        print('passed 1')
+        
+        total_discount = 0
+        promo_disc = 0
+        disc = 0
+        promo_code = ""
+        # Extract discount from promo code if available
+        if promo_codes and promo_codes[0][:2]:
+            promo_code = promo_codes[0]
+            if promo_code in name:
+                promo_code = ""
+            else:
+                promo_disc = await extract_number(promo_codes[0][:2]) or 0
+
+        # Calculate total discount based on available data
+        if discount_data and discount_data[0]:
+            disc = await extract_number(discount_data[0][0])
+            if promo_codes:
+                total_discount = promo_disc + disc
+            else:
+                total_discount = disc
+        elif promo_codes:  # Fallback to promo code discount if only promo codes are provided
+            total_discount = promo_disc
+            
+        # No promo codes, no deal price, no discount data or Limited deal
+        if (not promo_codes and not discount_data) or is_limited_deal == 'Limited time deal':
+            if saving_percentage:
+                prod_price = await extract_number(datas.get('Price', '1'))                
+                deal_price = prod_price
+                product_price = (prod_price * 100) / (100 - saving_percentage)
+                total_discount = saving_percentage              
+                                        
+        print("passed 2")
+        if total_discount:
+            if not product_price:
+                product_price = deal_price / (1 - total_discount / 100)
+            else:
+                deal_price = product_price * (1 - total_discount / 100)
+        
+        is_price_dollars = False
+        if "apply" in block_message.lower():
+            text_analyzer = TextAnalysis()
+            result_analyzed = text_analyzer.analyze_text(text)
+            if result_analyzed['deal_price']:
+                discount_data = await extract_number(result_analyzed['deal_price'])
+                is_price_dollars = True
+            elif result_analyzed['discounts'] and result_analyzed['discounts'][0]:
+                discount_data = await extract_number(result_analyzed['discounts'][0])
+                
+            # discount_data = result_analyzed['deal_price'] or result_analyzed['discounts']
+                            
+        breakdown, total = await price_breakdown.price_discounter(retail_price=product_price, discount_data=disc, 
+                                         promo_discount=promo_disc, savings_percentage=saving_percentage,
+                                         promo_code=promo_code, is_price_dollars=is_price_dollars)        
+                
+        breakdown_details = "```\n"  
+        for key, value in breakdown.items():
+            breakdown_details += f"{key}: {value}\n"
+        breakdown_details += "```"  
+        
+        embed.add_field(name="Order Summary", value=breakdown_details, inline=False)
+        # if total_discount and deal_price and not product_price:
+        #     product_price = float((deal_price * 100)  / (100 - float(total_discount)))                                                    
+              
+        # print("passed 3")
+        # if product_price and not deal_price:
+            
+        #     if total_discount:
+        #         deal_price = product_price * (1 - total_discount / 100)                                
+        #     else:                
+        #         deal_price = float(product_price)
+                
+        #         if saving_percentage:
+        #             product_price = float((deal_price * 100) / (100 - saving_percentage))
+        #             total_discount = saving_percentage
+        # if deal_price == product_price or product_price < deal_price:
+        #     total_discount = await extract_number(saving_percentage)
+        #     if total_discount:
+        #         deal_price = product_price
+        # product_price = float((deal_price * 100) / (100 - saving_percentage))
+        print("passed 4")
+        if total and not total == product_price:
+            embed.add_field(name='Deal Price', value=f"```${total:.2f}```", inline=True)
+        elif deal_price:
             embed.add_field(name='Deal Price', value=f"```${deal_price:.2f}```", inline=True)
         
         print("passed 5")        

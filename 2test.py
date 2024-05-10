@@ -1,25 +1,27 @@
-from urllib.parse import urlparse
+import requests
+import os
+import json
 
+# Replace with your actual API key
+API_KEY = os.getenv('KEEP_API_KEY')
+ASIN = 'B09TZP2B2D'  # Example ASIN, replace with the product's ASIN you are interested in
 
-def domain(url):
-    """
-    Extract the domain from a given URL.
+# Define the API endpoint
+endpoint = 'https://api.keepa.com/product'
 
-    Args:
-    - url (str): The URL from which to extract the domain.
+# Set up parameters
+params = {
+    'key': API_KEY,
+    'domain': 1,  # For Amazon.com, use the appropriate marketplace domain
+    'asin': ASIN
+}
 
-    Returns:
-    - str: The extracted domain.
-    """
-    domain = ""
-    parsed_url = urlparse(url)
-    raw_domain = parsed_url.netloc.split(".")
-    if len(raw_domain) == 3:
-        domain += raw_domain[-1]
-    elif len(raw_domain) == 4:
-        domain += ".".join(raw_domain[-2:])
-    return domain
+# Make the API call
+response = requests.get(endpoint, params=params)
+data = response.json()
 
-domain_ = "https://www.amazon.com/dp/B001GMY7AA"
+with open('file.json', 'w') as json_file:
+    json.dump(data, json_file, indent=4)
 
-print(domain(domain_))
+if product_data := data.get('products'):
+    print(product_data[0]['csv'][1])

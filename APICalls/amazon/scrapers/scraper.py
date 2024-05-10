@@ -83,7 +83,9 @@ class Amazon:
             'Image': image_link,
             'Store': store,
             'Store link': store_link,    
-            'Savings percentage': await self.catch.text(soup.select_one(self.scrape['savingsPercentage']))
+            'Savings percentage': await self.catch.text(soup.select_one(self.scrape['savingsPercentage'])),
+            'Limited deal': await self.catch.text(soup.select_one(self.scrape['limitedDeal'])),
+            'Promo block message': await self.catch.text(soup.select_one(self.scrape['promoBlockMessage']))
         }
 
     async def dataByAsin(self):

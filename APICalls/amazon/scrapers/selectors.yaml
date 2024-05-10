@@ -30,6 +30,8 @@ image_link_i: "div.imgTagWrapper img"
 image_link_ii: "img.a-dynamic-image.image-stretch-vertical.frontImage"
 store: "a#bylineInfo"
 savingsPercentage: "span.savingsPercentage"
+limitedDeal: "span#dealBadgeSupportingText"
+promoBlockMessage: "span.promoPriceBlockMessage"
 
 # Product links selectors
 product_links_search: "a.a-link-normal"

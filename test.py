@@ -7,6 +7,7 @@ from processors.textProcessors.textCleaner import TextCleaner
 from processors.textProcessors.discountDetector import DiscountDetective
 from processors.textProcessors.priceFinder import PriceMatch
 from processors.textProcessors.promoBuster import PromoBuster
+from utils.extract_number import extract_number
 
 text_cleaner = TextCleaner()
 price_match = PriceMatch()
@@ -70,16 +71,16 @@ class LinkResolver:
 link_res = LinkResolver()
 
 async def main():
-    content, urls = await link_res.scrape_facebook_post_content("https://www.facebook.com/groups/addictivedealsreloaded/permalink/1912513835845902/?mibextid=oFDknk&rdid=52wS8ajP60nyVjLh&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fp%2F74umpr9cTBx7aiX2%2F%3Fmibextid%3DoFDknk")
+    content, urls = await link_res.scrape_facebook_post_content("https://www.facebook.com/share/p/7Yre1N7J7znSEAxd/?mibextid=oFDknk")
     print(urls)
             
     discount_detective = DiscountDetective()
-    content = '🚨🚨WAY DAY IS N0W L!VE🚨🚨 28" Griddle with Front Shelf and Cover $199.99 (REG. $299.99) https://go.sylikes.com/eMItnDFH3xzH Free Shipping On All Orders! [AD] MAY042024'
+    content = 'Coupon: \xa0    \xa050% coupon applied to one item per order at checkout  Shop items   |   Terms   \xa0      Apply 50% coupon  Shop items   |   Term'
     category, cleaned_text = await text_cleaner.def_get_category_and_clean(content)
     cleaned_text = await text_cleaner.truncate_text_at_keywords(content, ["Toa maoni", "Comment"])
     
 
-    discounts_data = await discount_detective.process_text(cleaned_text)
+    discount_data = await discount_detective.process_text(cleaned_text)
     
     prices_extracted = await price_match.find_price(cleaned_text)
     deal_price, retail_price = prices_extracted.get('deal_price'), prices_extracted.get('retail_price')
@@ -87,12 +88,29 @@ async def main():
     promo_codes_discounts_extracted = await promo_buster.find_promo_code(cleaned_text)        
     promo_codes = [code for code, _ in promo_codes_discounts_extracted]        
     promo_discounts = {code: discount for code, discount in promo_codes_discounts_extracted if discount is not None}
+    total_discount = 0
+    promo_disc = 0
+
+    # Extract discount from promo code if available
+    if promo_codes and promo_codes[0][:2]:
+        promo_disc = await extract_number(promo_codes[0][:2]) or 0
+
+    # Calculate total discount based on available data
+    if discount_data and discount_data[0]:
+        disc = await extract_number(discount_data[0][0])
+        if promo_codes:
+            total_discount = promo_disc + disc
+        else:
+            total_discount = disc
+    elif promo_codes:  # Fallback to promo code discount if only promo codes are provided
+        total_discount = promo_disc
     print(f"Deal Price: {deal_price}")
     print(f"Retail Price: {retail_price}")
     print(f"Promo discounts: {promo_codes_discounts_extracted}")
-    print(f"Discount data: {discounts_data}")
+    print(f"Discount data: {discount_data}")
     print(f"Promo discounts {promo_discounts}")
     print(f"Promo codes {promo_codes}")
+    print(f"Total discount: {total_discount}")
     print("Content and URLs have been saved to facebook_post_content.txt")
 
 if __name__ == "__main__":

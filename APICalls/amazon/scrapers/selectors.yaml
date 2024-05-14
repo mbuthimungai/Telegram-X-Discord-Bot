@@ -32,6 +32,7 @@ store: "a#bylineInfo"
 savingsPercentage: "span.savingsPercentage"
 limitedDeal: "span#dealBadgeSupportingText"
 promoBlockMessage: "span.promoPriceBlockMessage"
+lightningDeal: "span.a-size-base.gb-accordion-active.a-text-bold"
 
 # Product links selectors
 product_links_search: "a.a-link-normal"

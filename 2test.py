@@ -1,6 +1,5 @@
-import requests
 import os
-import json
+
 
 # # Replace with your actual API key
 # API_KEY = os.getenv('KEEP_API_KEY')
@@ -34,7 +33,7 @@ accesskey = os.getenv('KEEP_API_KEY') # enter real access key here
 api = keepa.Keepa(accesskey)
 
 # Single ASIN query
-products = api.query('B09X147YTB') # returns list of product data
+products = api.query('B0C4LSYTDS') # returns list of product data
 
 
 # Dump the JSON, using the default function to handle non-serializable objects
@@ -54,7 +53,7 @@ def get_price(product):
                     price = price_history[price_type_index][i+1]
                     if price != -1:  # -1 indicates no price available
                         return f"${price / 100:.2f}"  # Convert to dollars
-                    
+
 def get_historic_price( product):
     # Keepa's timestamp for one year ago from now
     one_year_ago_keepa = (datetime.now() - timedelta(days=365)).timestamp() / 60 + 21564000
@@ -132,4 +131,4 @@ def get_coupon( product):
 
 print(get_price(products[0]))
 print(get_historic_price(products[0]))
-print(get_coupon(products[0]))
+# print(get_coupon(products[0]))

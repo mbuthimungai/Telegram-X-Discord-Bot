@@ -23,6 +23,7 @@ class Response:
         """
         self.base_url = base_url
 
+
     async def content(self, retries=3):
         """
         Perform an asynchronous HTTP GET request with retries and return the response content.
@@ -39,15 +40,16 @@ class Response:
                 async with aiohttp.ClientSession() as session:
                     headers = {'User-Agent': userAgents()}
                     async with session.get(self.base_url, headers=headers) as resp:
-                        # Check response status
-                        if resp.status == 200:
-                            cont = await resp.read()
-                            # print(cont)
+                        cont = await resp.text()
+                        # Check if the response contains the specific phrase
+                        if resp.status == 200 and "please make sure your browser is accepting cookies" not in cont:
+                            with open('Cont-Amazon', 'w', encoding='utf-8') as file:
+                                file.write(cont)
                             return cont
                         else:
                             attempt += 1
                             await asyncio.sleep(2)  # Wait for 2 seconds before retrying
-                            print(f"Attempt {attempt}: Failed to fetch data, retrying...")
+                            print(f"Attempt {attempt}: Failed to fetch valid data, retrying...")
             except aiohttp.ClientError as e:
                 print(f"Attempt {attempt}: HTTP Client Error occurred: {e}")
                 attempt += 1

@@ -71,11 +71,11 @@ class LinkResolver:
 link_res = LinkResolver()
 
 async def main():
-    content, urls = await link_res.scrape_facebook_post_content("https://www.facebook.com/share/p/7Yre1N7J7znSEAxd/?mibextid=oFDknk")
-    print(urls)
+    # content, urls = await link_res.scrape_facebook_post_content("https://www.facebook.com/share/p/7Yre1N7J7znSEAxd/?mibextid=oFDknk")
+    # print(urls)
             
     discount_detective = DiscountDetective()
-    content = 'Coupon: \xa0    \xa050% coupon applied to one item per order at checkout  Shop items   |   Terms   \xa0      Apply 50% coupon  Shop items   |   Term'
+    content = 'Coupon: \xa0            \xa020% coupon applied to one item per order at checkout  Shop items   |   Terms   \xa0      Apply 20% coupon  Shop items   |   Terms'
     category, cleaned_text = await text_cleaner.def_get_category_and_clean(content)
     cleaned_text = await text_cleaner.truncate_text_at_keywords(content, ["Toa maoni", "Comment"])
     

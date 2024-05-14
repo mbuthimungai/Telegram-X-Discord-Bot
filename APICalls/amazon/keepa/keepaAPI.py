@@ -5,7 +5,7 @@ import os
 
 
 
-class Keepa:
+class KeepaAPI:
     
     def __init__(self) -> None:        
         pass
@@ -52,7 +52,7 @@ class Keepa:
                         converted_price = price / 100.0  # Convert price from cents to dollars
                         historic_prices.append(converted_price)
                 if historic_prices:
-                    return f"{historic_prices[-2]:.2f}"
+                    return 
         return "Unknown"
 
     async def get_coupon(self, product):

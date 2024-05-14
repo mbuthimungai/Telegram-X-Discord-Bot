@@ -17,7 +17,7 @@ def extract_number(input_string):
     else:
         return None
     
-print(extract_number('$12.19'))
+print(extract_number('5%'))
 
 
 

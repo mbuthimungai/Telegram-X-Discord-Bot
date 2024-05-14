@@ -59,6 +59,7 @@ class Amazon:
             -dict: A dictionary containing product information.
         """
         soup = BeautifulSoup(content, 'lxml')
+        
         try:
             image_link = soup.select_one(self.scrape['image_link_i']).get('src')
         except Exception as e:
@@ -68,7 +69,15 @@ class Amazon:
             availabilities = soup.select_one(self.scrape['availability']).text.strip()
         except AttributeError:
             availabilities = 'In stock'
-
+        
+        # Extract the first child div from promoBlockMessage
+        promo_block_message_element = soup.select_one(self.scrape['promoBlockMessage'])
+        first_child_div_text = ''
+        if promo_block_message_element:
+            first_child_div = promo_block_message_element.find('div')
+            if first_child_div:
+                first_child_div_text = first_child_div.text.strip()
+                
         store = await self.catch.text(soup.select_one(self.scrape['store']))
         store_link = f"https://www.amazon.{self.country_domain}{await self.catch.attributes(soup.select_one(self.scrape['store']), 'href')}"
 
@@ -85,7 +94,8 @@ class Amazon:
             'Store link': store_link,    
             'Savings percentage': await self.catch.text(soup.select_one(self.scrape['savingsPercentage'])),
             'Limited deal': await self.catch.text(soup.select_one(self.scrape['limitedDeal'])),
-            'Promo block message': await self.catch.text(soup.select_one(self.scrape['promoBlockMessage']))
+            'Promo block message': first_child_div_text,
+            'lightningDeal': await self.catch.text(soup.select_one(self.scrape['lightningDeal']))
         }
 
     async def dataByAsin(self):

@@ -8,7 +8,7 @@ from utils.extract_number import extract_number
 from utils.extract_asin import extract_asin
 from helpers.priceBreakdown import PriceBreakDown
 from helpers.text_analyzer import TextAnalysis
-
+from utils.unwanted import filter_unwanted
 
 
 logger = configure_logger(__name__)
@@ -287,14 +287,14 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         disc = 0
         more_discount_data = 0
         promo_code = ""
-        
+        promo_codes = await filter_unwanted(promo_codes)
         print('passed 4')
         if promo_codes and promo_codes[0][:2]:
             promo_code = promo_codes[0]
             if promo_code not in name:
                 form_tracker['Promo Code'] = promo_code                
                 promo_disc = await extract_number(promo_codes[0][:2]) or 0                
-                if len(str(promo_disc)) >= 2:
+                if len(str(int(promo_disc))) >= 2:
                     form_tracker['Promo Discount'] = f"{promo_disc}%"
                 else:
                     promo_disc = 0
@@ -314,10 +314,12 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
 
         print('passed 6')
         is_price_dollars = False
-        if "coupon:" in block_message.lower():
+        
+        if "coupon:" in block_message.lower() or ("save" in block_message.lower() and promo_code in block_message.lower()):
             text_analyzer = TextAnalysis()
             result_analyzed = await text_analyzer.analyze_text(block_message)
             print(f'result analyzed: {result_analyzed}')
+            
             if result_analyzed['deal_price'] is not None:
                 print('passed_result_analyzed_1')
                 more_discount_data = await extract_number(result_analyzed['deal_price'])
@@ -329,6 +331,7 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
                 more_discount_data = await extract_number(result_analyzed['discounts'][0][0])
                 print(f"More discount: {more_discount_data}")
                 form_tracker['Clip coupon page'] = f"{more_discount_data}%"
+
         print('Passed 7')
         if saving_percentage and is_lightning_deal.lower() != 'lightning deal':
             

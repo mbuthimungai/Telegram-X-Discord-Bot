@@ -75,7 +75,24 @@ async def main():
     # print(urls)
             
     discount_detective = DiscountDetective()
-    content = 'Coupon: \xa0            \xa020% coupon applied to one item per order at checkout  Shop items   |   Terms   \xa0      Apply 20% coupon  Shop items   |   Terms'
+    content = '''Umesahau Akaunti?
+Sweet Deals Finder | Codes | Freebies II | # **🔥🔥65% OFF🔥🔥**
+·
+Wanachama elfu 193.7
+Jiunge na Kikundi
+Chole Parker
+Dakika 1
+
+ · 
+65% OFF
+34.99 WITH C0DE 45Z9ZSI9+ CL!P C0UP0N
+https://urlgeni.us/amzn/G_yK0
+[AD] MAY012024
+Solar Automatic Drip Irrigation Kit System, All-New Non-Fixed Timing Mode, Wesapor Solar Powered Garden Watering System, Auto Easy DIY Watering Device Supported 15 Pots Plants
+
+As an Amazon Associate, I earn from qualifying purchases. • Product prices and availability are accurate as of the date/time posted and are subject to change. • This content is provided ‘AS IS’ and is subject to change or removal at any time. • Promo codes, if any, may expire any time.
+Maoni 1
+Penda'''
     category, cleaned_text = await text_cleaner.def_get_category_and_clean(content)
     cleaned_text = await text_cleaner.truncate_text_at_keywords(content, ["Toa maoni", "Comment"])
     

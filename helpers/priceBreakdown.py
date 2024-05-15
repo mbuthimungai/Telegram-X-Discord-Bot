@@ -5,12 +5,7 @@ class PriceBreakDown:
     async def price_discounter(self, retail_price: float, discount_data: float,
                                promo_discount: float, savings_percentage: float, 
                                promo_code: str, is_price_dollars: bool, more_discount_data: str):
-#         List Price: 29.99
-# Clip coupon: $10
-# Deal Price: $19.99
-# Promo Code: 7GWUYJ9K 
-# Promo Discount: Missing
-# Checkout Price: Missing
+        
         print(f"Promo discount: {promo_discount}")
         print(f"Promo code: {promo_code}")
         if retail_price is None or not isinstance(retail_price, (int, float)):

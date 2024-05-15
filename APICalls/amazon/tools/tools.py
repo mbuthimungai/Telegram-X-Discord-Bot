@@ -42,18 +42,16 @@ class Response:
                     async with session.get(self.base_url, headers=headers) as resp:
                         cont = await resp.text()
                         # Check if the response contains the specific phrase
-                        if resp.status == 200 and "please make sure your browser is accepting cookies" not in cont:
-                            with open('Cont-Amazon', 'w', encoding='utf-8') as file:
-                                file.write(cont)
+                        if resp.status == 200 and "please make sure your browser is accepting cookies" not in cont:                            
                             return cont
                         else:
                             attempt += 1
-                            await asyncio.sleep(2)  # Wait for 2 seconds before retrying
+                            await asyncio.sleep(5)  # Wait for 2 seconds before retrying
                             print(f"Attempt {attempt}: Failed to fetch valid data, retrying...")
             except aiohttp.ClientError as e:
                 print(f"Attempt {attempt}: HTTP Client Error occurred: {e}")
                 attempt += 1
-                await asyncio.sleep(2)  # Wait for 2 seconds before retrying
+                await asyncio.sleep(5)  # Wait for 2 seconds before retrying
         raise Exception("Failed to fetch data after several retries")
 
     async def response(self):

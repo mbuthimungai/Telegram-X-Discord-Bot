@@ -77,6 +77,14 @@ class Amazon:
             first_child_div = promo_block_message_element.find('div')
             if first_child_div:
                 first_child_div_text = first_child_div.text.strip()
+        
+        second_div_child_text = ''
+        if promo_block_message_element:
+            second_child_divs = promo_block_message_element.find_all('div')
+            if len(second_child_divs) > 1:
+                second_child_div = second_child_divs[1]
+                if second_child_div:
+                    second_div_child_text = second_child_div.get_text(strip=True)                            
                 
         store = await self.catch.text(soup.select_one(self.scrape['store']))
         store_link = f"https://www.amazon.{self.country_domain}{await self.catch.attributes(soup.select_one(self.scrape['store']), 'href')}"
@@ -95,6 +103,7 @@ class Amazon:
             'Savings percentage': await self.catch.text(soup.select_one(self.scrape['savingsPercentage'])),
             'Limited deal': await self.catch.text(soup.select_one(self.scrape['limitedDeal'])),
             'Promo block message': first_child_div_text,
+            'Promo block message 2': second_div_child_text,
             'lightningDeal': await self.catch.text(soup.select_one(self.scrape['lightningDeal']))
         }
 

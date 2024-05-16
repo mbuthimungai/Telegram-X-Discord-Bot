@@ -270,10 +270,13 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         }
         print('passed 2')
         form_tracker['Text Deal Price'] = deal_price
+        main_deal_price = 0
+        main_deal_price = deal_price
         saving_percentage = await extract_number(datas.get('Savings percentage'))
         product_price = float(product_price_info['price'].replace('$', '').strip())
 
         block_message = datas.get('Promo block message')
+        block_message_2 = datas.get('Promo block message 2')
         is_lightning_deal = datas.get('lightningDeal')
         deal_price = 0
         if deal_price:
@@ -286,7 +289,8 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         promo_disc = 0
         disc = 0
         more_discount_data = 0
-        promo_code = ""
+        more_discount_data_save = 0
+        promo_code = None
         promo_codes = await filter_unwanted(promo_codes)
         print('passed 4')
         if promo_codes and promo_codes[0][:2]:
@@ -315,7 +319,7 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         print('passed 6')
         is_price_dollars = False
         
-        if "coupon:" in block_message.lower() or ("save" in block_message.lower() and promo_code in block_message.lower()):
+        if "coupon:" in block_message.lower() or ("save" in block_message.lower() and promo_code in block_message):
             text_analyzer = TextAnalysis()
             result_analyzed = await text_analyzer.analyze_text(block_message)
             print(f'result analyzed: {result_analyzed}')
@@ -324,13 +328,31 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
                 print('passed_result_analyzed_1')
                 more_discount_data = await extract_number(result_analyzed['deal_price'])
                 is_price_dollars = True
-                form_tracker['Clip coupon page'] = f"${more_discount_data}"
+                form_tracker['Clip coupon page 1'] = f"${more_discount_data}"
                 
             elif result_analyzed['discounts'] and result_analyzed['discounts'][0]:
                 print(f'passed_result_analyzed_2: {result_analyzed["discounts"][0]}')
                 more_discount_data = await extract_number(result_analyzed['discounts'][0][0])
                 print(f"More discount: {more_discount_data}")
-                form_tracker['Clip coupon page'] = f"{more_discount_data}%"
+                form_tracker['Clip coupon page 1'] = f"{more_discount_data}%"
+        elif "save" in block_message_2.lower() and promo_code in block_message_2:
+            text_analyzer = TextAnalysis()
+            result_analyzed = await text_analyzer.analyze_text(block_message_2)
+            print(f'result analyzed: {result_analyzed}')
+            
+            if result_analyzed['deal_price'] is not None:
+                print('passed_result_analyzed_3')
+                more_discount_data_save = await extract_number(result_analyzed['deal_price'])
+                is_price_dollars = True
+                form_tracker['Clip coupon page 2'] = f"${more_discount_data_save}"
+                
+            elif result_analyzed['discounts'] and result_analyzed['discounts'][0]:
+                print(f'passed_result_analyzed_4: {result_analyzed["discounts"][0]}')
+                more_discount_data_save = await extract_number(result_analyzed['discounts'][0][0])
+                print(f"More discount: {more_discount_data}")
+                form_tracker['Clip coupon page 2'] = f"{more_discount_data_save}%"
+        if 'clip the extra' in text.lower() and more_discount_data and disc:
+            more_discount_data = 0
 
         print('Passed 7')
         if saving_percentage and is_lightning_deal.lower() != 'lightning deal':
@@ -346,7 +368,9 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             savings_percentage=saving_percentage,
             promo_code=promo_code, 
             is_price_dollars=is_price_dollars,
-            more_discount_data=more_discount_data
+            more_discount_data=more_discount_data,
+            more_discount_data_save=more_discount_data_save,
+            deal_price=main_deal_price
         )
         print('passed 9')
         form_tracker['Deal Price'] = total

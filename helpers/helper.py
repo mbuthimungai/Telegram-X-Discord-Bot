@@ -18,12 +18,14 @@ class Helper:
         self.discord_sender = discord_sender
         print("\n")
         print(f"Process Message: {message_data} \n")
-        for url in message_data['urls']:
-            if "facebook.com" in url:
-                await self.process_facebook_url(url, message_data)
-            else:
-                await self.process_amazon_url(url, message_data)
-
+        try:
+            for url in message_data['urls']:
+                if "facebook.com" in url:
+                    await self.process_facebook_url(url, message_data)
+                else:
+                    await self.process_amazon_url(url, message_data)
+        except Exception as e:
+            pass
     async def process_facebook_url(self, url, message_data):
         print(f"Processing message process_facebook_url: {message_data}\n")
         content, urls = await self.link_resolver.scrape_facebook_post_content(url)

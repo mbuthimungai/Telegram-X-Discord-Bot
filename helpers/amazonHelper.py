@@ -269,6 +269,7 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             'Text Deal Price': 'Missing'
         }
         print('passed 2')
+        deal_price = await extract_number(str(deal_price))
         form_tracker['Text Deal Price'] = deal_price
         main_deal_price = 0
         main_deal_price = deal_price
@@ -279,6 +280,7 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         block_message_2 = datas.get('Promo block message 2')
         is_lightning_deal = datas.get('lightningDeal')
         deal_price = 0
+        truncated_text = text
         if deal_price:
             deal_price = await extract_number(deal_price.replace('xx', '99'))
         is_limited_deal = datas.get('Limited deal')
@@ -326,6 +328,9 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             
             if result_analyzed['deal_price'] is not None:
                 print('passed_result_analyzed_1')
+                truncated_text = truncated_text.replace(result_analyzed['deal_price'], '')
+                new_analyzed = await text_analyzer.analyze_text(truncated_text)
+                deal_price = await extract_number(new_analyzed['deal_price'])
                 more_discount_data = await extract_number(result_analyzed['deal_price'])
                 is_price_dollars = True
                 form_tracker['Clip coupon page 1'] = f"${more_discount_data}"
@@ -342,6 +347,9 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             
             if result_analyzed['deal_price'] is not None:
                 print('passed_result_analyzed_3')
+                truncated_text = truncated_text.replace(result_analyzed['deal_price'], '')
+                new_analyzed = await text_analyzer.analyze_text(truncated_text)
+                deal_price = await extract_number(new_analyzed['deal_price'])
                 more_discount_data_save = await extract_number(result_analyzed['deal_price'])
                 is_price_dollars = True
                 form_tracker['Clip coupon page 2'] = f"${more_discount_data_save}"
@@ -355,17 +363,16 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             more_discount_data = 0
 
         print('Passed 7')
-        if saving_percentage and is_lightning_deal.lower() != 'lightning deal':
+        # if saving_percentage and is_lightning_deal.lower() != 'lightning deal':
             
-           product_price = ((product_price * 100) / (100 - saving_percentage))
+        #    product_price = ((product_price * 100) / (100 - saving_percentage))
 
         form_tracker['List Price'] = product_price
         print('passed 8')
-        breakdown, total = await price_breakdown.price_discounter(
+        breakdown, total, total_discount = await price_breakdown.price_discounter(
             retail_price=product_price, 
             discount_data=disc, 
-            promo_discount=promo_disc, 
-            savings_percentage=saving_percentage,
+            promo_discount=promo_disc,            
             promo_code=promo_code, 
             is_price_dollars=is_price_dollars,
             more_discount_data=more_discount_data,
@@ -419,6 +426,7 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         
 async def skip_scrape(userInput, promo_codes, text):
     # Filtering and converting to integers if the first two characters are digits.
+    promo_codes = await filter_unwanted(promo_codes)
     promo_discount = [int(promo_code[:2]) for promo_code in promo_codes if is_int(promo_code[:2])]
     
     embed = discord.Embed(title=f"Save {'%'.join(map(str, promo_discount))}% on the eligible item(s) below", url=userInput, color=0xff9900)

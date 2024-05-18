@@ -15,4 +15,4 @@ async def extract_number(input_string):
     if match:
         return float(match.group())
     else:
-        return None
+        return float(0)

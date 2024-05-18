@@ -13,7 +13,9 @@ class PriceMatch:
 
     async def find_price(self, text):
         current_time = time.time()
-
+        
+        text = text.lower()
+        
         # Debouncing: Check if we should delay processing
         if self.last_call_time and (current_time - self.last_call_time < self.debounce_time):
             #print("Waiting due to debouncing...")
@@ -23,7 +25,7 @@ class PriceMatch:
 
         #print("Initializing Price Match")
         # Initialize blacklists and valid prices list
-        preceding_blacklist = ["when you spend at least", "Save", "clip"]
+        preceding_blacklist = ["when you spend at least", "Save", "clip", "clip the", "clip the extra"]
         following_blacklist = ["promotional credit", "in promotional item(s)", "in promotional items"]
         valid_prices = []
 

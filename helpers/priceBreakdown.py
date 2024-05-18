@@ -58,7 +58,162 @@
         
 #         return price_breakdown_dict, retail_price
     
+# from utils.extract_number import extract_number
+
+# class PriceBreakDown:
+#     def __init__(self) -> None:
+#         pass
     
+#     async def price_discounter(self, retail_price: float, discount_data: float,
+#                                promo_discount: float,  
+#                                promo_code: str, is_price_dollars: bool, more_discount_data: float,
+#                                more_discount_data_save: float, deal_price: str):
+        
+#         print(f"Promo discount: {promo_discount}")
+#         print(f"Promo code: {promo_code}")
+#         if retail_price is None or not isinstance(retail_price, (int, float)):
+#             retail_price = 0.0
+        
+#         price_breakdown_dict = {"Items": f'${retail_price:.2f}'}
+#         initial_price = retail_price 
+#         total_percentage_discount = 0.0
+        
+#         def apply_discount(price, discount, is_dollar, description):
+#             nonlocal total_percentage_discount
+#             if discount is not None and isinstance(discount, (int, float)) and discount != 0:
+#                 if is_dollar:
+#                     discounted_price = discount
+#                     description = f'{description}: $-{discount:.2f} off'
+#                 else:
+#                     discounted_price = (discount * initial_price) / 100
+#                     total_percentage_discount += discount
+#                     description = f'{description}: {discount}% off'
+#                 price -= discounted_price
+#                 price_breakdown_dict[description] = f'-${discounted_price:.2f}'
+#             return price
+
+#         # Apply savings percentage discount
+#         # retail_price = apply_discount(retail_price, savings_percentage, False, f'Savings percentage -{savings_percentage}%')
+#         # if abs(retail_price - initial_price) <= 1:
+#         #     return price_breakdown_dict, retail_price, total_percentage_discount
+
+#         # Apply more discount data
+#         retail_price = apply_discount(retail_price, more_discount_data, is_price_dollars, 'Discount 1 page')
+#         if abs(retail_price - deal_price) <= 1:
+#             return price_breakdown_dict, retail_price, total_percentage_discount
+
+#         # Apply more discount data save
+#         retail_price = apply_discount(retail_price, more_discount_data_save, is_price_dollars, 'Discount 2 page')
+#         if abs(retail_price - deal_price) <= 1:
+#             return price_breakdown_dict, retail_price, total_percentage_discount
+
+#         # Apply discount data
+#         retail_price = apply_discount(retail_price, discount_data, False, f'Discount: {discount_data}% off')
+#         if abs(retail_price - deal_price) <= 1:
+#             return price_breakdown_dict, retail_price, total_percentage_discount
+
+#         # Apply promo discount
+#         if promo_code:
+#             retail_price = apply_discount(retail_price, promo_discount, False, promo_code)
+#             if abs(retail_price - deal_price) <= 1:
+#                 return price_breakdown_dict, retail_price, total_percentage_discount
+        
+#         deal_price = await extract_number(str(deal_price))
+        
+#         if deal_price:
+#             deal_price = float(deal_price)
+#             if not abs(deal_price - retail_price) <= 1:
+#                 if not promo_discount:
+#                     percentage_change = ((deal_price - retail_price) / retail_price) * 100
+#                     if promo_code:
+#                         price_breakdown_dict[f"{promo_code} Percentage Change"] = f'{percentage_change:.2f}%'
+#                     else:
+#                         price_breakdown_dict["Additional Percentage Change"] = f'{percentage_change:.2f}%'
+#                     retail_price = deal_price
+
+#         if retail_price != initial_price:
+#             price_breakdown_dict["Total"] = f'${retail_price:.2f}'
+        
+#         return price_breakdown_dict, retail_price, total_percentage_discount
+
+# from utils.extract_number import extract_number
+
+# class PriceBreakDown:
+#     def __init__(self) -> None:
+#         pass
+    
+#     async def price_discounter(self, retail_price: float, discount_data: float,
+#                                promo_discount: float,  
+#                                promo_code: str, is_price_dollars: bool, more_discount_data: float,
+#                                more_discount_data_save: float, deal_price: str):
+        
+#         print(f"Promo discount: {promo_discount}")
+#         print(f"Promo code: {promo_code}")
+#         if retail_price is None or not isinstance(retail_price, (int, float)):
+#             retail_price = 0.0
+        
+#         price_breakdown_dict = {"Items": f'${retail_price:.2f}'}
+#         initial_price = retail_price 
+#         total_percentage_discount = 0.0
+#         price_before_zero = initial_price
+        
+#         def apply_discount(price, discount, is_dollar, description):
+#             nonlocal total_percentage_discount, price_before_zero
+#             if discount is not None and isinstance(discount, (int, float)) and discount != 0:
+#                 price_before_zero = price  # Store price before applying discount
+#                 if is_dollar:
+#                     discounted_price = discount
+#                     description = f'{description}: $-{discount:.2f} off'
+#                 else:
+#                     discounted_price = (discount * initial_price) / 100
+#                     total_percentage_discount += discount
+#                     description = f'{description}: {discount}% off'
+#                 price -= discounted_price
+#                 if price <= 0:
+#                     return 0, price_before_zero
+#                 price_breakdown_dict[description] = f'-${discounted_price:.2f}'
+#             return price, price_before_zero
+
+#         # Apply more discount data
+#         retail_price, price_before_zero = apply_discount(retail_price, more_discount_data, is_price_dollars, 'Discount 1 page')
+#         if abs(retail_price - deal_price) <= 1 or retail_price == 0:
+#             return price_breakdown_dict, price_before_zero, total_percentage_discount
+
+#         # Apply more discount data save
+#         retail_price, price_before_zero = apply_discount(retail_price, more_discount_data_save, is_price_dollars, 'Discount 2 page')
+#         if abs(retail_price - deal_price) <= 1 or retail_price == 0:
+#             return price_breakdown_dict, price_before_zero, total_percentage_discount
+
+#         # Apply discount data
+#         retail_price, price_before_zero = apply_discount(retail_price, discount_data, False, f'Discount: {discount_data}% off')
+#         if abs(retail_price - deal_price) <= 1 or retail_price == 0:
+#             return price_breakdown_dict, price_before_zero, total_percentage_discount
+
+#         # Apply promo discount
+#         if promo_code:
+#             retail_price, price_before_zero = apply_discount(retail_price, promo_discount, False, promo_code)
+#             if abs(retail_price - deal_price) <= 1 or retail_price == 0:
+#                 return price_breakdown_dict, price_before_zero, total_percentage_discount
+        
+#         deal_price = await extract_number(str(deal_price))
+        
+#         if deal_price:
+#             deal_price = float(deal_price)
+#             if not abs(deal_price - retail_price) <= 1:
+#                 if not promo_discount:
+#                     percentage_change = ((deal_price - retail_price) / retail_price) * 100
+#                     if promo_code:
+#                         price_breakdown_dict[f"{promo_code} Percentage Change"] = f'{percentage_change:.2f}%'
+#                     else:
+#                         price_breakdown_dict["Additional Percentage Change"] = f'{percentage_change:.2f}%'
+#                     retail_price = deal_price
+
+#         if retail_price != initial_price:
+#             price_breakdown_dict["Total"] = f'${retail_price:.2f}'
+        
+#         return price_breakdown_dict, retail_price, total_percentage_discount
+
+
 from utils.extract_number import extract_number
 
 class PriceBreakDown:
@@ -66,7 +221,7 @@ class PriceBreakDown:
         pass
     
     async def price_discounter(self, retail_price: float, discount_data: float,
-                               promo_discount: float, savings_percentage: float, 
+                               promo_discount: float,  
                                promo_code: str, is_price_dollars: bool, more_discount_data: float,
                                more_discount_data_save: float, deal_price: str):
         
@@ -77,51 +232,67 @@ class PriceBreakDown:
         
         price_breakdown_dict = {"Items": f'${retail_price:.2f}'}
         initial_price = retail_price 
-        price_to_discount = retail_price
-        
+        total_percentage_discount = 0.0
+        price_before_zero = initial_price
         
         def apply_discount(price, discount, is_dollar, description):
+            nonlocal total_percentage_discount, price_before_zero
             if discount is not None and isinstance(discount, (int, float)) and discount != 0:
-                print(discount)
+                price_before_zero = price  # Store price before applying discount
                 if is_dollar:
                     discounted_price = discount
                     description = f'{description}: $-{discount:.2f} off'
                 else:
-                    discounted_price = (discount * price_to_discount) / 100
+                    discounted_price = (discount * initial_price) / 100
+                    total_percentage_discount += discount
                     description = f'{description}: {discount}% off'
                 price -= discounted_price
-                
                 price_breakdown_dict[description] = f'-${discounted_price:.2f}'
             return price
 
-        # Apply savings percentage discount
-        retail_price = apply_discount(retail_price, savings_percentage, False, f'Savings percentage -{savings_percentage}%')
-        
         # Apply more discount data
         retail_price = apply_discount(retail_price, more_discount_data, is_price_dollars, 'Discount 1 page')
-        
+        if retail_price == 0:
+            return price_breakdown_dict, price_before_zero, total_percentage_discount
+        if abs(retail_price - deal_price) <= 1:
+            return price_breakdown_dict, retail_price, total_percentage_discount
+
         # Apply more discount data save
         retail_price = apply_discount(retail_price, more_discount_data_save, is_price_dollars, 'Discount 2 page')
-        
+        if retail_price == 0:
+            return price_breakdown_dict, price_before_zero, total_percentage_discount
+        if abs(retail_price - deal_price) <= 1:
+            return price_breakdown_dict, retail_price, total_percentage_discount
+
         # Apply discount data
         retail_price = apply_discount(retail_price, discount_data, False, f'Discount: {discount_data}% off')
-        
+        if retail_price == 0:
+            return price_breakdown_dict, price_before_zero, total_percentage_discount
+        if abs(retail_price - deal_price) <= 1:
+            return price_breakdown_dict, retail_price, total_percentage_discount
+
         # Apply promo discount
         if promo_code:
             retail_price = apply_discount(retail_price, promo_discount, False, promo_code)
+            if retail_price == 0:
+                return price_breakdown_dict, price_before_zero, total_percentage_discount
+            if abs(retail_price - deal_price) <= 1:
+                return price_breakdown_dict, retail_price, total_percentage_discount
         
         deal_price = await extract_number(str(deal_price))
         
-        if deal_price and not abs(deal_price - retail_price) <= 1:
-            # price_breakdown_dict["Deal Price Check"] = "Deal price is not within +1 or -1 of the retail price"
-            # If there is no promo code, find the percentage change and update the retail price
-            if not promo_discount:
-                percentage_change = ((deal_price - retail_price) / retail_price) * 100
-                price_breakdown_dict[f"{promo_code} Percentage Change"] = f'Change in price: {percentage_change:.2f}%'
-                retail_price = deal_price
-                # price_breakdown_dict["Updated Retail Price"] = f'${retail_price:.2f}'
-        
+        if deal_price:
+            deal_price = float(deal_price)
+            if not abs(deal_price - retail_price) <= 1:
+                if not promo_discount:
+                    percentage_change = ((deal_price - retail_price) / retail_price) * 100
+                    if promo_code:
+                        price_breakdown_dict[f"{promo_code} Percentage Change"] = f'{percentage_change:.2f}%'
+                    else:
+                        price_breakdown_dict["Additional Percentage Change"] = f'{percentage_change:.2f}%'
+                    retail_price = deal_price
+
         if retail_price != initial_price:
-            price_breakdown_dict["Total"] = f'${retail_price:.2f}'        
+            price_breakdown_dict["Total"] = f'${retail_price:.2f}'
         
-        return price_breakdown_dict, retail_price
+        return price_breakdown_dict, retail_price, total_percentage_discount

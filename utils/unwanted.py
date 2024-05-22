@@ -2,7 +2,7 @@ import re
 
 async def filter_unwanted(words):
     # List of unwanted words
-    unwanteds = ['C0UP0N', 'COUPON']
+    unwanteds = ['C0UP0N', 'COUPON', 'C0UPON']
     
     # Regex pattern for dates in the format MAY012024
     date_pattern = re.compile(r'^[A-Z]{3}\d{2}\d{4}$')

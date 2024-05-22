@@ -9,7 +9,7 @@ from utils.extract_asin import extract_asin
 from helpers.priceBreakdown import PriceBreakDown
 from helpers.text_analyzer import TextAnalysis
 from utils.unwanted import filter_unwanted
-
+from utils.product_tracker import ProductTracker
 
 logger = configure_logger(__name__)
 
@@ -231,7 +231,7 @@ async def getDataByAsinSearch(userInput, promo_codes, promo_discounts, discount_
 #     except Exception as e:
 #         logger.error(f"Error getdata {e}")
 
-async def get_product_data(userInput, method, promo_codes, promo_discounts, discount_data, deal_price, retail_price, text):
+async def get_product_data(userInput, method, promo_codes, promo_discounts, discount_data, deal_price, retail_price, text, product_tracker: ProductTracker):
     """
     Fetches data from Amazon using either an ASIN or a link, creates a Discord embed with product data.
     """
@@ -240,13 +240,17 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
     price_breakdown = PriceBreakDown()
     
     try:
+        product_asin = await extract_asin(userInput)
+        if await product_tracker.is_product_tracked(product_asin):
+            return None, None, None
         datas = await getattr(Amazon(userInput), method)()
         if not datas:
             logger.info("Failed to retrieve data from Amazon.")
-            return
+            return None, None, None
+        
         print('passed 1')
         keepa_api = KeepaAPI()
-        product_asin = await extract_asin(userInput)
+        
         product_price_info = await keepa_api.make_request(product_asin)
 
         logger.info(f"Data {datas}\n")
@@ -430,29 +434,33 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             
         embed.add_field(name="Store", value=f"[{datas['Store']}]({store_link})", inline=False)
         logger.info(f"Embed: {embed.to_dict()}\n")
+        await product_tracker.add_product(product_asin)
         return embed, total_discount, is_lightning_deal
     except Exception as e:
         logger.error(f"Error getdata {e}")
         
-async def skip_scrape(userInput, promo_codes, text):
+async def skip_scrape(userInput, promo_codes, text, product_tracker: ProductTracker):
     # Filtering and converting to integers if the first two characters are digits.
-    promo_codes = await filter_unwanted(promo_codes)
-    promo_discount = [int(promo_code[:2]) for promo_code in promo_codes if is_int(promo_code[:2])]
-    total_discount = 0
-    if promo_discount:
-        total_discount = promo_discount[0]
+    userInput = userInput.strip()
+    if not await product_tracker.is_product_tracked(userInput):
+        promo_codes = await filter_unwanted(promo_codes)
+        promo_discount = [int(promo_code[:2]) for promo_code in promo_codes if is_int(promo_code[:2])]
+        total_discount = 0
+        if promo_discount:
+            total_discount = promo_discount[0]
+            
+        embed = discord.Embed(title=f"Save {'%'.join(map(str, promo_discount))}% on the eligible item(s) below", url=userInput, color=0xff9900)
+        embed.set_thumbnail(url='https://example.com/default_thumbnail.jpg')
+        embed.timestamp = datetime.now()    
+        embed.set_footer(text='Powered by DiamondAIO', icon_url='https://static.timesofisrael.com/www/uploads/2017/12/iStock-639204700.jpg')
+        embed.add_field(name='Content', value=f'```{text}```', inline=False)
+        if promo_codes:
+            embed.add_field(name='Promo Codes', value=f'```, ```'.join(promo_codes), inline=False)
         
-    embed = discord.Embed(title=f"Save {'%'.join(map(str, promo_discount))}% on the eligible item(s) below", url=userInput, color=0xff9900)
-    embed.set_thumbnail(url='https://example.com/default_thumbnail.jpg')
-    embed.timestamp = datetime.now()    
-    embed.set_footer(text='Powered by DiamondAIO', icon_url='https://static.timesofisrael.com/www/uploads/2017/12/iStock-639204700.jpg')
-    embed.add_field(name='Content', value=f'```{text}```', inline=False)
-    if promo_codes:
-        embed.add_field(name='Promo Codes', value=f'```, ```'.join(promo_codes), inline=False)
-    
-    if promo_discount:
-        embed.add_field(name='Promo Discount', value='```, ```'.join(f"{discount}% Off" for discount in promo_discount), inline=False)
-    return embed, total_discount
+        if promo_discount:
+            embed.add_field(name='Promo Discount', value='```, ```'.join(f"{discount}% Off" for discount in promo_discount), inline=False)
+        await product_tracker.add_product(userInput)
+        return embed, total_discount
 
 async def product_types(userInput) ->list:
     

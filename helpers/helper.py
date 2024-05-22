@@ -5,7 +5,7 @@ from processors.linkProcessors.linkResolvers import LinkResolver
 from processors.linkProcessors.linkDressers import LinkDresser
 from helpers.text_analyzer import TextAnalysis
 from processors.textProcessors.textCleaner import TextCleaner
-
+from utils.product_tracker import ProductTracker
 class Helper:
     def __init__(self, message_data: dict, discord_sender: DiscordSender) -> None:
         self.logger = configure_logger(__name__)        
@@ -13,7 +13,7 @@ class Helper:
         self.link_resolver = LinkResolver()
         self.link_dresser = LinkDresser()        
 
-    async def process_links(self, message_data, discord_sender: DiscordSender):
+    async def process_links(self, message_data, discord_sender: DiscordSender, product_tracker: ProductTracker):
         # self.logger.info(f'The queued message is: {message_data}')        
         self.discord_sender = discord_sender
         print("\n")
@@ -23,7 +23,7 @@ class Helper:
                 if "facebook.com" in url:
                     await self.process_facebook_url(url, message_data)
                 else:
-                    await self.process_amazon_url(url, message_data)
+                    await self.process_amazon_url(url, message_data, product_tracker=product_tracker)
         except Exception as e:
             pass
     async def process_facebook_url(self, url, message_data):
@@ -41,16 +41,16 @@ class Helper:
             else:
                 self.logger.info(f"URL does not contain 'amazon.com': {urls[0]}")
 
-    async def process_amazon_url(self, url, message_data):
+    async def process_amazon_url(self, url, message_data, product_tracker: ProductTracker=None):
         print(f"Processing message process_amazon_url: {message_data}\n")
         link_data = await self.link_resolver.resolve_url(url)
         
         if link_data['resolved'] and "amazon.com" in link_data['url']:
             cleaned_link = await self.link_dresser.clean_amazon_link(link_data['url'])
             
-            await self.amazon_helper(cleaned_link, message_data)
+            await self.amazon_helper(cleaned_link, message_data, product_tracker)
 
-    async def amazon_helper(self, url: str, message_data):   
+    async def amazon_helper(self, url: str, message_data, product_tracker: ProductTracker):   
         text = message_data['text']                
         try:
             
@@ -59,7 +59,7 @@ class Helper:
             
             if not result_analyzed['is_promo_only']:
                 if url.startswith('https://www.amazon.com/promocode/') or url.startswith('https://www.amazon.com/s'):                    
-                    embeds, discount = await skip_scrape(url, [code for code, _ in result_analyzed['promo_codes_discounts']], text)
+                    embeds, discount = await skip_scrape(url, [code for code, _ in result_analyzed['promo_codes_discounts']], text, product_tracker)
                     await self.discord_sender.send_to_discord(embed=embeds, links=[url], 
                                                                filepath=message_data['image'], 
                                                                is_promo_code_only=result_analyzed['is_promo_only'], discount=discount)
@@ -69,7 +69,7 @@ class Helper:
                     embed_data, discount, is_lightning_deal = await get_product_data(url, method='dataByLink', promo_codes=[code for code, _ in result_analyzed['promo_codes_discounts']], 
                                            promo_discounts={code: discount for code, discount in result_analyzed['promo_codes_discounts'] if discount is not None}, 
                                            discount_data=result_analyzed['discounts'],
-                                           deal_price=result_analyzed['deal_price'], retail_price=result_analyzed['retail_price'], text=text)
+                                           deal_price=result_analyzed['deal_price'], retail_price=result_analyzed['retail_price'], text=text, product_tracker=product_tracker)
                     
                     # self.logger.info(f"embedded_data: {embed_data}")
                     

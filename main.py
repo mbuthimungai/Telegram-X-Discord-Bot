@@ -86,6 +86,7 @@ from helpers.helper import Helper
 from senders.discordSender.sendMessages import DiscordSender
 from APICalls.userAgents.scrapers import get_useragents
 from utils.logger import configure_logger
+from utils.product_tracker import ProductTracker
 
 sys.dont_write_bytecode = True
 
@@ -101,27 +102,28 @@ def initialize_helpers_and_senders():
     discord_bot_token = os.getenv("DISCORD_BOT_TOKEN")
     discord_channel_id = int(os.getenv("DISCORD_CHANNEL_ID"))
     discord_sender = DiscordSender(discord_bot_token, discord_channel_id)
+    product_tracker = ProductTracker()
     helper = Helper(message_data={}, discord_sender=discord_sender)  # Assuming message_data is provided here or updated dynamically
-    return discord_sender, helper
+    return discord_sender, helper, product_tracker
 
-async def message_worker(queue: Queue, helper: Helper, semaphore: asyncio.Semaphore, discord_sender: DiscordSender):
+async def message_worker(queue: Queue, helper: Helper, semaphore: asyncio.Semaphore, discord_sender: DiscordSender, product_tracker: ProductTracker):
     while True:
         message_data = await queue.get()
         print('\n')
         print(f'Message Data message_worker : {message_data}\n')
         async with semaphore:
             # Assuming a method in helper uses discord_sender to send messages
-            await helper.process_links(message_data, discord_sender)
+            await helper.process_links(message_data, discord_sender, product_tracker)
         queue.task_done()
 
 
-async def process_messages(payload, discord_sender, helper):
+async def process_messages(payload, discord_sender, helper, product_tracker):
     queue = Queue()
     semaphore = asyncio.Semaphore(MAX_CONCURRENT_MESSAGES)
 
     # Create worker tasks to process messages from the queue
     # workers = [asyncio.create_task(message_worker(queue, helper, semaphore)) for _ in range(MAX_CONCURRENT_MESSAGES)]
-    workers = [asyncio.create_task(message_worker(queue, helper, semaphore, discord_sender)) for _ in range(MAX_CONCURRENT_MESSAGES)]
+    workers = [asyncio.create_task(message_worker(queue, helper, semaphore, discord_sender, product_tracker)) for _ in range(MAX_CONCURRENT_MESSAGES)]
 
     msg_retriever = TelegramMessageRetriever(payload, lambda message_data: logger.info(f"Enqueuing message: {message_data}\n") or queue.put_nowait(message_data))
     await msg_retriever.run()
@@ -140,7 +142,7 @@ async def main():
     await get_useragents()
     config_data = json.load(open("./configurations/config.json"))
     
-    discord_sender, helper = initialize_helpers_and_senders()
+    discord_sender, helper, product_tracker = initialize_helpers_and_senders()
     payload = next((item for item in config_data["telegram_keys"] if int(item["key_number"]) == 1), None)
     
     if not payload:
@@ -150,7 +152,8 @@ async def main():
     # Run both the Discord bot and the message processing concurrently
     await asyncio.gather(
         discord_sender.run(),  # This starts the Discord bot
-        process_messages(payload, discord_sender, helper)  # This starts processing messages concurrently
+        process_messages(payload, discord_sender, helper, product_tracker),  # This starts processing messages concurrently
+        product_tracker.start_tracking()
     )
 
 if __name__ == "__main__":

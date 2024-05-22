@@ -140,8 +140,8 @@ class DiscordSender:
         if discount_channel_id:
             discount_channel = self.client.get_channel(discount_channel_id)
             await discount_channel.send(embed=embed)
-        
-        if is_lightning_deal.lower() == 'lightning deal':
+                    
+        if is_lightning_deal.lower().strip() == 'lightning deal':
             lightning_deal_channel = self.client.get_channel(self.channel_map['lightning_deals'])
             await lightning_deal_channel.send(embed=embed)
 

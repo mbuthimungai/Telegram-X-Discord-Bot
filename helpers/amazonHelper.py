@@ -370,11 +370,16 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         # if saving_percentage and is_lightning_deal.lower() != 'lightning deal':
             
         #    product_price = ((product_price * 100) / (100 - saving_percentage))
-        if not is_lightning_deal.lower() == 'lightning deal':
+        if not is_lightning_deal.lower() == 'lightning deal' and not 'price drop' in text.lower():
             saving_percentage = 0
         else:
             form_tracker['price drop'] = f"-{saving_percentage}%"
-            
+        
+        if 'price drop' in text.lower():
+            product_price = (product_price * 100) / saving_percentage
+            if more_discount_data or more_discount_data_save:
+                disc = 0
+        
         form_tracker['List Price'] = product_price
         print('passed 8')
         breakdown, total, total_discount = await price_breakdown.price_discounter(

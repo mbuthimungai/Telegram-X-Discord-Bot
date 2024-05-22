@@ -33,7 +33,7 @@ accesskey = os.getenv('KEEP_API_KEY') # enter real access key here
 api = keepa.Keepa(accesskey)
 
 # Single ASIN query
-products = api.query('B09RYRRL7R') # returns list of product data
+products = api.query('B0B8G4QBSV') # returns list of product data
 
 
 # Dump the JSON, using the default function to handle non-serializable objects
@@ -130,5 +130,5 @@ def get_coupon( product):
         return None
 
 print(get_price(products[0]))
-print(get_historic_price(products[0]))
+# print(get_historic_price(products[0]))
 # print(get_coupon(products[0]))

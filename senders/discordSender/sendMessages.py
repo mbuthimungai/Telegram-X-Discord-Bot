@@ -31,6 +31,12 @@ class DiscordSender:
             'oldnavy': '1210273448069431318',
             'nike': '1210279585099415572',
             'others': '1209702637193396295',
+            'amazon_90_100' : '1094304813820424263',
+            'amazon_80_89' : '1094304791561252997',
+            'amazon_70_79' : '1094304762024951819',
+            'amazon_60_69' : '1094304733893771285',
+            'amazon_1_59' : '1142303917393313882',
+            'lightning_deals': '1242557327702495263'
         }
         self.bot_token = bot_token
         self.message_queue = asyncio.Queue()
@@ -100,25 +106,45 @@ class DiscordSender:
                     os.remove(filepath)
                 self.file_queue.task_done()
 
-    def determine_channel_id(self, links, is_promo_code_only=False):
+    def determine_channel_id(self, links, is_promo_code_only=False, discount=0):
         # Use the last channel ID if the message is promo code only
+        print(f"Disounted price: {discount}")
+        discount_channel = ""
+        if 90 <= discount <= 100:
+            discount_channel = self.channel_map['amazon_90_100']
+        if 80 <= discount <= 89:
+            discount_channel = self.channel_map['amazon_80_89']
+        if 70 <= discount <= 79:
+            discount_channel = self.channel_map['amazon_70_79']
+        if 60 <= discount <= 69:
+            discount_channel = self.channel_map['amazon_60_69']
+        if 0 <= discount <= 59:
+            discount_channel = self.channel_map['amazon_1_59']
         if is_promo_code_only:
             return self.last_channel_id if self.last_channel_id else self.default_channel_id
 
         for link in links:
             for key, channel_id in self.channel_map.items():
                 if key in link.lower():
-                    return channel_id
-        return self.channel_map.get('others', self.default_channel_id)
+                    return channel_id, discount_channel
 
-    async def send_to_discord(self, embed, links, filepath=None, is_promo_code_only=False):
-         # Determine the channel ID, considering if the message is promo code only
-        print(f"Embed: send_discotd {embed}")
-        print(f"Links: {links}")
-        channel_id = self.determine_channel_id(links, is_promo_code_only=is_promo_code_only)
-        
+        return self.channel_map.get('others', self.default_channel_id), discount_channel
+
+    async def send_to_discord(self, embed, links, filepath=None, is_promo_code_only=False, discount=0, is_lightning_deal='N/A'):
+        # Determine the channel ID, considering if the message is promo code only
+        # print(f'Discount: {discount}\n\n')
+        channel_id, discount_channel_id = self.determine_channel_id(links, is_promo_code_only=is_promo_code_only, discount=discount)
         # Send the message to the determined channel
         channel = self.client.get_channel(channel_id)
+
+        if discount_channel_id:
+            discount_channel = self.client.get_channel(discount_channel_id)
+            await discount_channel.send(embed=embed)
+        
+        if is_lightning_deal.lower() == 'lightning deal':
+            lightning_deal_channel = self.client.get_channel(self.channel_map['lightning_deals'])
+            await lightning_deal_channel.send(embed=embed)
+
         try:
             if filepath:
                 with open(filepath, 'rb') as file:

@@ -366,7 +366,11 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
         # if saving_percentage and is_lightning_deal.lower() != 'lightning deal':
             
         #    product_price = ((product_price * 100) / (100 - saving_percentage))
-
+        if not is_lightning_deal.lower() == 'lightning deal':
+            saving_percentage = 0
+        else:
+            form_tracker['price drop'] = f"-{saving_percentage}%"
+            
         form_tracker['List Price'] = product_price
         print('passed 8')
         breakdown, total, total_discount = await price_breakdown.price_discounter(
@@ -377,7 +381,8 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             is_price_dollars=is_price_dollars,
             more_discount_data=more_discount_data,
             more_discount_data_save=more_discount_data_save,
-            deal_price=main_deal_price
+            deal_price=main_deal_price,
+            savings_percentage=saving_percentage
         )
         print('passed 9')
         form_tracker['Deal Price'] = total
@@ -392,10 +397,15 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             form_tracker_details += f"{key}: {value}\n"
         form_tracker_details += "```"
         
+        total_discount = 0
+        if product_price and total:
+            total_discount = ((product_price - total) / product_price) * 100
+            print(f'Total discount: {total_discount}\n\n\n')
+ 
         embed.add_field(name='Tracker details', value=form_tracker_details, inline=False)
         embed.add_field(name="Order Summary", value=breakdown_details, inline=False)
         print('passed 10')
-        if total and total != product_price:
+        if total:
             embed.add_field(name='Deal Price', value=f"```${total:.2f}```", inline=True)
         elif deal_price:
             embed.add_field(name='Deal Price', value=f"```${deal_price:.2f}```", inline=True)
@@ -420,7 +430,7 @@ async def get_product_data(userInput, method, promo_codes, promo_discounts, disc
             
         embed.add_field(name="Store", value=f"[{datas['Store']}]({store_link})", inline=False)
         logger.info(f"Embed: {embed.to_dict()}\n")
-        return embed
+        return embed, total_discount, is_lightning_deal
     except Exception as e:
         logger.error(f"Error getdata {e}")
         
@@ -428,7 +438,10 @@ async def skip_scrape(userInput, promo_codes, text):
     # Filtering and converting to integers if the first two characters are digits.
     promo_codes = await filter_unwanted(promo_codes)
     promo_discount = [int(promo_code[:2]) for promo_code in promo_codes if is_int(promo_code[:2])]
-    
+    total_discount = 0
+    if promo_discount:
+        total_discount = promo_discount[0]
+        
     embed = discord.Embed(title=f"Save {'%'.join(map(str, promo_discount))}% on the eligible item(s) below", url=userInput, color=0xff9900)
     embed.set_thumbnail(url='https://example.com/default_thumbnail.jpg')
     embed.timestamp = datetime.now()    
@@ -439,7 +452,7 @@ async def skip_scrape(userInput, promo_codes, text):
     
     if promo_discount:
         embed.add_field(name='Promo Discount', value='```, ```'.join(f"{discount}% Off" for discount in promo_discount), inline=False)
-    return embed
+    return embed, total_discount
 
 async def product_types(userInput) ->list:
     

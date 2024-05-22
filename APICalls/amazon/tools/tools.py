@@ -24,7 +24,7 @@ class Response:
         self.base_url = base_url
 
 
-    async def content(self, retries=3):
+    async def content(self, retries=10):
         """
         Perform an asynchronous HTTP GET request with retries and return the response content.
 
@@ -46,12 +46,12 @@ class Response:
                             return cont
                         else:
                             attempt += 1
-                            await asyncio.sleep(5)  # Wait for 2 seconds before retrying
+                            await asyncio.sleep(5)  # Wait for 5 seconds before retrying
                             print(f"Attempt {attempt}: Failed to fetch valid data, retrying...")
             except aiohttp.ClientError as e:
                 print(f"Attempt {attempt}: HTTP Client Error occurred: {e}")
                 attempt += 1
-                await asyncio.sleep(5)  # Wait for 2 seconds before retrying
+                await asyncio.sleep(5)  # Wait for 5 seconds before retrying
         raise Exception("Failed to fetch data after several retries")
 
     async def response(self):

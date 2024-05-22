@@ -1,0 +1,45 @@
+{
+    "timestamp": 1716292110641,
+    "tokensLeft": 38,
+    "refillIn": 34814,
+    "refillRate": 20,
+    "tokenFlowReduction": 0.0,
+    "tokensConsumed": 0,
+    "processingTimeInMs": 0,
+    "lightningDeals": [
+      {
+        "domainId": 1,
+        "lastUpdate": 7040856,
+        "asin": "B0C89L3RYG",
+        "sellerName": "Gemeiju-US",
+        "sellerId": "A3N2XVY2HYX7A5",
+        "dealId": "0dd75203",
+        "dealPrice": 1115,
+        "currentPrice": 1799,
+        "image": "71-qeWq3UWL.jpg",
+        "isPrimeEligible": false,
+        "isFulfilledByAmazon": false,
+        "isMAP": false,
+        "rating": 44,
+        "totalReviews": 883,
+        "dealState": "UPCOMING",
+        "startTime": 7040864,
+        "endTime": 7041556,
+        "percentClaimed": 14,
+        "variation": [
+          {
+            "dimension": "Size",
+            "value": "2L"
+          },
+          {
+            "dimension": "Color",
+            "value": "Pink"
+          }
+        ],
+        "percentOff": 0,
+        "title": "2L/70oz Dog Water Bowl No Spill Slow Water Feeder, Large Capacity Pet Water Dispenser, Pet Water Bowl for Vehicle/Outdoor/Indoor (Pink)",
+        "isPrimeEarlyAccess": true
+      }
+    ]
+  }
+  

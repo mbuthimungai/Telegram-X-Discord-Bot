@@ -59,14 +59,14 @@ class Helper:
             
             if not result_analyzed['is_promo_only']:
                 if url.startswith('https://www.amazon.com/promocode/') or url.startswith('https://www.amazon.com/s'):                    
-                    embeds = await skip_scrape(url, [code for code, _ in result_analyzed['promo_codes_discounts']], text)
+                    embeds, discount = await skip_scrape(url, [code for code, _ in result_analyzed['promo_codes_discounts']], text)
                     await self.discord_sender.send_to_discord(embed=embeds, links=[url], 
                                                                filepath=message_data['image'], 
-                                                               is_promo_code_only=result_analyzed['is_promo_only'])
+                                                               is_promo_code_only=result_analyzed['is_promo_only'], discount=discount)
                     
                 else:
                     
-                    embed_data = await get_product_data(url, method='dataByLink', promo_codes=[code for code, _ in result_analyzed['promo_codes_discounts']], 
+                    embed_data, discount, is_lightning_deal = await get_product_data(url, method='dataByLink', promo_codes=[code for code, _ in result_analyzed['promo_codes_discounts']], 
                                            promo_discounts={code: discount for code, discount in result_analyzed['promo_codes_discounts'] if discount is not None}, 
                                            discount_data=result_analyzed['discounts'],
                                            deal_price=result_analyzed['deal_price'], retail_price=result_analyzed['retail_price'], text=text)
@@ -76,7 +76,8 @@ class Helper:
                     if embed_data:
                         await self.discord_sender.send_to_discord(embed=embed_data, links=[url],
                                                         filepath=message_data['image'],
-                                                        is_promo_code_only=result_analyzed['is_promo_only']
+                                                        is_promo_code_only=result_analyzed['is_promo_only'],
+                                                        discount=discount, is_lightning_deal=is_lightning_deal
                                                         )
         except Exception as e:
             self.logger.error(f"An error occurred in amazon_helper: {e}")

@@ -223,7 +223,8 @@ class PriceBreakDown:
     async def price_discounter(self, retail_price: float, discount_data: float,
                                promo_discount: float,  
                                promo_code: str, is_price_dollars: bool, more_discount_data: float,
-                               more_discount_data_save: float, deal_price: str):
+                               more_discount_data_save: float, deal_price: str,
+                               savings_percentage: str=0):
         
         print(f"Promo discount: {promo_discount}")
         print(f"Promo code: {promo_code}")
@@ -250,23 +251,30 @@ class PriceBreakDown:
                 price_breakdown_dict[description] = f'-${discounted_price:.2f}'
             return price
 
+        # Apply price drop (savings percentage)
+        retail_price = apply_discount(retail_price, savings_percentage, is_price_dollars, 'Price drop')
+        if retail_price <= 0:
+            return price_breakdown_dict, price_before_zero, total_percentage_discount
+        if abs(retail_price - deal_price) <= 1:
+            return price_breakdown_dict, retail_price, total_percentage_discount
+        
         # Apply more discount data
         retail_price = apply_discount(retail_price, more_discount_data, is_price_dollars, 'Discount 1 page')
-        if retail_price == 0:
+        if retail_price <= 0:
             return price_breakdown_dict, price_before_zero, total_percentage_discount
         if abs(retail_price - deal_price) <= 1:
             return price_breakdown_dict, retail_price, total_percentage_discount
 
         # Apply more discount data save
         retail_price = apply_discount(retail_price, more_discount_data_save, is_price_dollars, 'Discount 2 page')
-        if retail_price == 0:
+        if retail_price <= 0:
             return price_breakdown_dict, price_before_zero, total_percentage_discount
         if abs(retail_price - deal_price) <= 1:
             return price_breakdown_dict, retail_price, total_percentage_discount
 
         # Apply discount data
         retail_price = apply_discount(retail_price, discount_data, False, f'Discount: {discount_data}% off')
-        if retail_price == 0:
+        if retail_price <= 0:
             return price_breakdown_dict, price_before_zero, total_percentage_discount
         if abs(retail_price - deal_price) <= 1:
             return price_breakdown_dict, retail_price, total_percentage_discount
@@ -274,7 +282,7 @@ class PriceBreakDown:
         # Apply promo discount
         if promo_code:
             retail_price = apply_discount(retail_price, promo_discount, False, promo_code)
-            if retail_price == 0:
+            if retail_price <= 0:
                 return price_breakdown_dict, price_before_zero, total_percentage_discount
             if abs(retail_price - deal_price) <= 1:
                 return price_breakdown_dict, retail_price, total_percentage_discount
